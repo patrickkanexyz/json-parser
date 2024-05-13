@@ -5,6 +5,7 @@ import (
     "io"
     "os"
     "log"
+    "unicode"
 )
 
 func main() {
@@ -20,6 +21,6 @@ func main() {
     data := string(stdin[:])
 
     for index, char := range data {
-        fmt.Printf("Index: %d Char: %q\n", index, char)
+        fmt.Printf("Index: %d Char: %q IsLetter: %t\n", index, char, unicode.IsLetter(char))
     }
 }
