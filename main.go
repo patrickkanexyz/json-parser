@@ -20,7 +20,24 @@ func main() {
 
     data := string(stdin[:])
 
+    token := ""
+
+    tokens := []string{}
+
     for index, char := range data {
         fmt.Printf("Index: %d Char: %q IsLetter: %t\n", index, char, unicode.IsLetter(char))
+        
+        if unicode.IsLetter(char) {
+            token += string(char)
+        } 
+
+        if ! unicode.IsLetter(char) {
+            //append(tokens, token)
+            token = ""
+
+            //append(tokens, char)
+        }
     }
+
+    fmt.Println(tokens)
 }
