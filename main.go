@@ -2,42 +2,43 @@ package main
 
 import (
 	"fmt"
-    "io"
-    "os"
-    "log"
-    "unicode"
+	"io"
+	"log"
+	"os"
+	"unicode"
 )
 
 func main() {
 	fmt.Println("Hello JSON.")
 
-    stdin, err := io.ReadAll(os.Stdin)
-    if err != nil {
-        log.Fatal(err)
-    }
+	stdin, err := io.ReadAll(os.Stdin)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    fmt.Printf("%s\n", stdin)
+	data := string(stdin[:])
 
-    data := string(stdin[:])
+	token := ""
 
-    token := ""
+	var tokens []string
 
-    tokens := []string{}
+	for _, char := range data {
 
-    for index, char := range data {
-        fmt.Printf("Index: %d Char: %q IsLetter: %t\n", index, char, unicode.IsLetter(char))
-        
-        if unicode.IsLetter(char) {
-            token += string(char)
-        } 
+		if unicode.IsLetter(char) {
+			token += string(char)
+			continue
+		}
 
-        if ! unicode.IsLetter(char) {
-            //append(tokens, token)
-            token = ""
+		if unicode.IsDigit(char) {
+			token += string(char)
+			continue
+		}
 
-            //append(tokens, char)
-        }
-    }
+		tokens = append(tokens, token)
+		token = ""
+		tokens = append(tokens, string(char))
 
-    fmt.Println(tokens)
+	}
+
+	fmt.Println(tokens)
 }
