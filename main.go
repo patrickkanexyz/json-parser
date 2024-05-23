@@ -5,7 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
-	"unicode"
+	//"unicode"
 )
 
 func main() {
@@ -18,27 +18,81 @@ func main() {
 
 	data := string(stdin[:])
 
-	token := ""
-
 	var tokens []string
 
-	for _, char := range data {
+    tokens = lexer(data)
 
-		if unicode.IsLetter(char) {
-			token += string(char)
-			continue
-		}
+    os.Exit(parser(tokens))
 
-		if unicode.IsDigit(char) {
-			token += string(char)
-			continue
-		}
+}
 
-		tokens = append(tokens, token)
-		token = ""
-		tokens = append(tokens, string(char))
+func lexer(s string) []string {
+    // Takes in a text string and returns a slice of tokens.
 
-	}
+    // Tokens you need to recognize:
+    //      [ begin-array
+    //      ] end-array
+    //      { begin-object
+    //      } end-object
+    //      : name-separator
+    //      , value-separator
+    //      false
+    //      true
+    //      null
+    //      value false/null/true/object/array/number/string
+    //
+    // All strings start and end with quotes(").
 
-	fmt.Println(tokens)
+    tokens := []string{}
+    //lastchar := ""
+    //token := ""
+
+    for _, c := range s {
+        char := string(c)
+        if char == "{" {
+            tokens = append(tokens, string(char))
+            continue
+        }
+
+        if char == "}" {
+            tokens = append(tokens, string(char))
+            continue
+        }
+
+        if char == "[" {
+            tokens = append(tokens, string(char))
+            continue
+        }
+        
+        if char == "]" {
+            tokens = append(tokens, string(char))
+            continue
+        }
+
+        if char == ":" {
+            tokens = append(tokens, string(char))
+            continue
+        }
+
+        if char == "," {
+            tokens = append(tokens, string(char))
+            continue
+        }
+
+    } // end for loop
+
+    return tokens
+
+} // end lexer()
+
+func parser(s []string) int {
+    if len(s) < 2 {
+        return 1
+    }
+
+    if s[0] == "{" && s[1] == "}" {
+        return 0
+    }
+
+    return 2
 }
