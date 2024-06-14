@@ -5,7 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
-	//"unicode"
+	"unicode"
 )
 
 func main() {
@@ -18,11 +18,13 @@ func main() {
 
 	data := string(stdin[:])
 
-	var tokens []string
+	//var tokens []string
 
-    tokens = lexer(data)
+    token_stream := lexer(data)
 
-    os.Exit(parser(tokens))
+    fmt.Println(token_stream)
+
+    os.Exit(parser(token_stream))
 
 }
 
@@ -44,42 +46,67 @@ func lexer(s string) []string {
     // All strings start and end with quotes(").
 
     tokens := []string{}
-    //lastchar := ""
-    //token := ""
+    lastchar := ""
+    identifier := ""
+    inString := false
 
     for _, c := range s {
         char := string(c)
         if char == "{" {
             tokens = append(tokens, string(char))
+            lastchar = char
             continue
         }
 
         if char == "}" {
             tokens = append(tokens, string(char))
+            lastchar = char
             continue
         }
 
         if char == "[" {
             tokens = append(tokens, string(char))
+            lastchar = char
             continue
         }
         
         if char == "]" {
             tokens = append(tokens, string(char))
+            lastchar = char
             continue
         }
 
         if char == ":" {
             tokens = append(tokens, string(char))
+            lastchar = char
             continue
         }
 
         if char == "," {
             tokens = append(tokens, string(char))
+            lastchar = char
+            continue
+        }
+
+        if char == "\"" && ! inString {
+            inString = true
+            continue
+        }
+
+        if char == "\"" && inString {
+            inString = false
+            tokens = append(tokens, string(identifier))
+            continue
+        }
+
+        if inString && unicode.IsLetter(c) {
+            identifier += char
             continue
         }
 
     } // end for loop
+
+    fmt.Println(lastchar)
 
     return tokens
 
